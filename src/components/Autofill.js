@@ -1,34 +1,39 @@
-import React from 'react';
-import { LoadScript, Autocomplete } from '@react-google-maps/api';
-import { styled } from '@mui/system';
+import React, { useRef, useEffect, useState } from 'react';
+import { Loader } from '@googlemaps/js-api-loader';
 
-const Autofill = ({defaultText}) => {
+const Autofill = ({ onPlaceSelected }) => {
+  const inputRef = useRef(null);
+  const [google, setGoogle] = useState(null);
 
-    const StyledAutocomplete = styled(Autocomplete)({
-        width: '90%',
-        margin: 'auto',
-        '& input': {
-          width: '90%',
-          padding: '10px',
-          fontSize: '21px',
-          borderRadius: '4px',
-          border: '2px solid #ccc',
-          textAlign: 'center',
-          '::placeholder': { 
-            textAlign: 'center',
-          },
-        },
-      });
+  useEffect(() => {
+    const loader = new Loader({
+      apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
+      version: 'weekly',
+      libraries: ['places']
+    });
+
+    loader.load().then((google) => {
+      setGoogle(google);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!google) return;
+
+    const autocomplete = new google.maps.places.Autocomplete(inputRef.current);
+    
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      onPlaceSelected(place);
+    });
+
+    return () => {
+      google.maps.event.clearInstanceListeners(autocomplete);
+    };
+  }, [google, onPlaceSelected]);
 
   return (
-    <LoadScript
-      googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY}
-      libraries={['places']}
-    >
-      <StyledAutocomplete>
-        <input type="text" placeholder={text}/>
-      </StyledAutocomplete>
-    </LoadScript>
+    <input ref={inputRef} type="text" placeholder="Enter a location" />
   );
 };
 
