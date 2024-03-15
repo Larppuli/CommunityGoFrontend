@@ -56,7 +56,7 @@ const MapContainer = () => {
     <div
       ref={mapContainerRef}
       style={{
-        height: "500px",
+        height: "400px",
         width: "99%",
         borderRadius: "5px",
         marginBottom: "10px",
