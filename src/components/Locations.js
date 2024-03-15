@@ -8,8 +8,6 @@ const Locations = ({ onPickupSelect, onDestinationSelect }) => {
     return (
         <Box
             sx={{
-                paddingTop: '6px',
-                paddingBottom: '6px',
                 borderRadius: '5px',
                 '& > :not(style) + :not(style)': { marginTop: '6px' },
             }} style={{ display: 'grid', placeItems: 'center' }}
