@@ -9,7 +9,7 @@ function DateTimePick({ onTimeSelect }) {
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <MobileDateTimePicker
         textField={(props) => <TextField {...props} />}
-        label="Latest time for arrival"
+        label="Pickup time"
         onChange={onTimeSelect}
         ampm={false}
         sx={{
