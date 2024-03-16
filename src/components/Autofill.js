@@ -47,7 +47,7 @@ const Autofill = ({ onPlaceSelected, defaultText }) => {
       variant="filled"
       fullWidth
       sx={{
-        width: '96%',
+        width: '100%',
         '& .MuiFilledInput-root': {
           borderColor: '#ffffff',
         },
