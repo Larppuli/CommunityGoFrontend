@@ -30,14 +30,20 @@ function App() {
 
       setTimeout(() => {
         setErrorMessage('');
-      }, 3000);
+      }, 4000);
 
       return;
     }
 
     const newRide = {
-      destination: destination.geometry,
-      pickup: pickup.geometry,
+      destination: {
+        geometry: destination.geometry,
+        address_components: destination.address_components
+      },
+      pickup: {
+        pickup: pickup.geometry,
+        address_components: pickup.address_components
+      },
       time: time
     }
 
