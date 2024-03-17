@@ -15,18 +15,18 @@ const StyledBottomNavigation = styled(BottomNavigation)(({ theme }) => ({
 }));
 
 function Navbar() {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState('new-ride');
 
   return (
     <StyledBottomNavigation
       value={value}
-      onChange={(newValue) => {
+      onChange={(event, newValue) => {
         setValue(newValue);
       }}
       showLabels
     >
-      <BottomNavigationAction label="New ride" href="new-ride" icon={<FmdGoodIcon />} sx={{ color: '#d4d4dc' }} />
-      <BottomNavigationAction label="Bundles" href="bundles" icon={<GroupsIcon />} sx={{ color: '#d4d4dc' }} />
+      <BottomNavigationAction href='new-ride' label="New ride" value="new-ride" icon={<FmdGoodIcon />} sx={{ color: '#d4d4dc' }} />
+      <BottomNavigationAction href='bundles' label="Bundles" value="bundles" icon={<GroupsIcon />} sx={{ color: '#d4d4dc' }} />
     </StyledBottomNavigation>
   );
 }
