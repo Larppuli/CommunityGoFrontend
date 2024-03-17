@@ -6,7 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1a237e',
+      main: '#381494',
     },
   },
 });
@@ -16,6 +16,7 @@ const styles = {
     width: '100%',
     height: "50px",
     margin: 'auto',
+    color: '#d4d4dc'
   },
 };
 
