@@ -25,8 +25,8 @@ function Navbar() {
       }}
       showLabels
     >
-      <BottomNavigationAction href='new-ride' label="New ride" value="new-ride" icon={<FmdGoodIcon />} sx={{ color: '#d4d4dc' }} />
-      <BottomNavigationAction href='bundles' label="Bundles" value="bundles" icon={<GroupsIcon />} sx={{ color: '#d4d4dc' }} />
+      <BottomNavigationAction href='new-ride' label="New ride" value="new-ride" icon={<FmdGoodIcon />} sx={{ color: 'white' }} />
+      <BottomNavigationAction href='bundles' label="Bundles" value="bundles" icon={<GroupsIcon />} sx={{ color: 'white' }} />
     </StyledBottomNavigation>
   );
 }
