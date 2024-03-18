@@ -22,7 +22,7 @@ function NewRideView() {
   };
 
   const handleTimeSelect = (time) => {
-    const newTime = dayjs(time).add(2, 'hour');
+    const newTime = dayjs(time);
     setTime(newTime);
   };
 
@@ -71,12 +71,12 @@ function NewRideView() {
 
   return (
     <div>
-      <Typography variant="h4" align="center" gutterBottom style={{ color: '#d4d4dc' }}>
+      <Typography variant="h4" align="center" gutterBottom style={{ color: 'white' }}>
         <b>CommunityGo</b>
       </Typography>
       <MapContainer />
       <Locations onPickupSelect={handlePickupSelect} onDestinationSelect={handleDestinationSelect} onTimeSelect={handleTimeSelect} />
-      <MyButton buttonText="Save" handleClick={handleSave} />
+      <MyButton buttonText="Save" handleClick={handleSave} backgroundColor="#381494" margin="auto" width="100%" height="50px"/>
       <Grow in={!!message} timeout={300}>
         <Alert severity={severity} variant="filled" style={{ marginTop: '10px' }}>
           {message}
