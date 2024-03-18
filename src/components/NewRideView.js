@@ -17,6 +17,7 @@ function NewRideView() {
   };
 
   const handlePickupSelect = (pickupPlace) => {
+    console.log(pickupPlace)
     setPickup(pickupPlace);
   };
 
@@ -38,11 +39,13 @@ function NewRideView() {
         const newRide = {
         destination: {
             geometry: destination.geometry,
-            address_components: destination.address_components
+            address_components: destination.address_components,
+            name: destination.name
         },
         pickup: {
             pickup: pickup.geometry,
-            address_components: pickup.address_components
+            address_components: pickup.address_components,
+            name: pickup.name
         },
         time: time
         }
