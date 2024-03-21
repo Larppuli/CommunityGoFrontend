@@ -8,7 +8,7 @@ function TimePick({ onTimeSelect }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <TimePicker
-        label="Select pickup time"
+        label="Arrival"
         onChange={onTimeSelect}
         ampm={false}
         width= '100%'

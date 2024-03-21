@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import TextField from '@mui/material/TextField';
 
-const Autofill = ({ onPlaceSelected, defaultText }) => {
+const Autofill = ({ onPlaceSelected, defaultText, margin }) => {
   const inputRef = useRef(null);
   const [google, setGoogle] = useState(null);
 
@@ -43,11 +43,11 @@ const Autofill = ({ onPlaceSelected, defaultText }) => {
     <TextField
       inputRef={inputRef}
       label={
-        <span style={{ color: '#d4d4dc' }}>{defaultText}</span>}
+        <span style={{ color: 'white' }}>{defaultText}</span>}
       variant="filled"
-      fullWidth
       sx={{
         width: '100%',
+        marginBottom: margin,
         '& .MuiFilledInput-root': {
           borderColor: '#ffffff',
         },
