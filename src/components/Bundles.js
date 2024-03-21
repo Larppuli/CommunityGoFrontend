@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Bundle from './Bundle';
-import { Typography, Paper, List } from '@mui/material';
+import { Typography, List } from '@mui/material';
 
 function Bundles() {
   const [rides, setRides] = useState([]);
@@ -40,7 +40,7 @@ function Bundles() {
           <b>Rides in your local area</b>
         </Typography>
       </div>
-      <Paper style={{ maxHeight: "70%", overflow: 'auto', background: "#333333" }}>
+      <div style={{ maxHeight: "70%", overflow: 'auto', background: "#333333" }}>
         <List>
           {isLoading ? ( // Render loading message if still loading
             <p>Loading...</p>
@@ -49,8 +49,9 @@ function Bundles() {
               <Bundle key={index} ride={ride} />
             ))
           )}
+          {error && <p>{error}</p>}
         </List>
-      </Paper>
+      </div>
     </div>
   );
 }
