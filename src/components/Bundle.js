@@ -20,9 +20,9 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-function Bundle(ride) {
+function Bundle( {ride, loader} ) {
   const [expanded, setExpanded] = React.useState(false);
-  const arrivalTime = new Date(ride.ride.arrivalTime);
+  const arrivalTime = new Date(ride.arrivalTime);
   const hours = arrivalTime.getHours().toString().padStart(2, '0');
   const minutes = arrivalTime.getMinutes().toString().padStart(2, '0');
   const [rideTime, setRideTime] = useState(null);
@@ -32,12 +32,13 @@ function Bundle(ride) {
   const [id, setId] = useState('');
   const [waypoints, setWaypoints] = useState([]);
   const [disabled, setDisabled] = useState(true);
+  const [routes, setRoutes] = useState('');
 
   useEffect(() => {
-    setRideTime(ride.ride.rideTime)
-    setId(ride.ride._id)
-    setWaypoints(ride.ride.waypoints)
-  }, [ride.ride.rideTime, ride.ride._id, ride.ride.waypoint, ride.ride.waypoints]);
+    setRideTime(ride.rideTime)
+    setId(ride._id)
+    setWaypoints(ride.waypoints)
+  }, [ride.rideTime, ride._id, ride.waypoint, ride.waypoints, loader]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -74,18 +75,18 @@ function Bundle(ride) {
         address_components: waypoint.address_components,
         name: waypoint.name
     }
-    console.log("waypoints: ", ride.ride.waypoints)
-    const stops = Array.isArray(ride.ride.waypoints) ? [...ride.ride.waypoints, waypointCleaned] : [waypointCleaned];
+    console.log("waypoints: ", ride.waypoints)
+    const stops = Array.isArray(ride.waypoints) ? [...ride.waypoints, waypointCleaned] : [waypointCleaned];
 
     try {
         const rideData = {
-            pickup: ride.ride.pickup.geometry.location,
-            destination: ride.ride.destination.geometry.location,
+            pickup: ride.pickup.geometry.location,
+            destination: ride.destination.geometry.location,
             waypoints: stops
           };
 
         const response = await axios.post('http://localhost:5000/calculate-ride-time', rideData);
-        const { ride_time } = response.data;
+        const { ride_time, routes } = response.data;
         
         const timeDifference = ride_time - rideTime;
         console.log(timeDifference)
@@ -119,7 +120,7 @@ function Bundle(ride) {
   return (
     <Card variant="outlined" style={{ color: 'white', background: 'linear-gradient(to right, #381494, #592ec7)', marginBottom: '18px', paddingBottom: "13px", marginInline: '10px', paddingInline: '20px' }}>
       <Typography variant="h6" align="center">
-        <b>{ride.ride.destination.name}</b>
+        <b>{ride.destination.name}</b>
       </Typography>
       <Typography align="center">
         Taxi arrives to the destination at <b>{hours}:{minutes}</b>
@@ -134,7 +135,7 @@ function Bundle(ride) {
         <ExpandMoreIcon color="white" />
       </ExpandMore>
       <Collapse in={expanded} timeout="auto" unmountOnExit >
-        <Autofill onPlaceSelected={calculateDuration} defaultText="Your pickup location" margin="10px"/>
+        <Autofill onPlaceSelected={calculateDuration} loader={loader.loader} defaultText="Your pickup location" margin="10px"/>
         <MyButton handleClick={handlePickupSave} disabled={disabled} buttonText="Join ride" backgroundColor="#4B4B4B" width="100%" height="50px" />
         <Grow in={showAlert} timeout={300} style={{ height: '40px' }} >
           <Alert severity={severity} variant="filled" style={{ marginTop: '10px' }}>
