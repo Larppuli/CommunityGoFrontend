@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Typography, Alert, Grow } from '@mui/material';
 import Locations from './InputContainer';
-import MapContainer from './MapContainer';
 import MyButton from './Button';
 import dayjs from 'dayjs';
+import DriversView from './DriversView';
 
-function NewRideView() {
+function NewRideView({ loader }) {
   const [destination, setDestination] = useState('');
   const [pickup, setPickup] = useState('');
   const [time, setTime] = useState('');
@@ -73,8 +73,8 @@ function NewRideView() {
       <Typography variant="h4" align="center" gutterBottom style={{ color: 'white' }}>
         <b>CommunityGo</b>
       </Typography>
-      <MapContainer />
-      <Locations onPickupSelect={handlePickupSelect} onDestinationSelect={handleDestinationSelect} onTimeSelect={handleTimeSelect} />
+      <DriversView loader={loader} />
+      <Locations onPickupSelect={handlePickupSelect} onDestinationSelect={handleDestinationSelect} onTimeSelect={handleTimeSelect} loader={loader} />
       <MyButton buttonText="Save" handleClick={handleSave} backgroundColor="#381494" margin="auto" width="100%" height="50px"/>
       <Grow in={!!message} timeout={300}>
         <Alert severity={severity} variant="filled" style={{ marginTop: '10px' }}>
