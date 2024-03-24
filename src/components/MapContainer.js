@@ -1,17 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import { Loader } from "@googlemaps/js-api-loader";
 
-const MapContainer = () => {
+const MapContainer = ({ route, loader }) => {
   const mapContainerRef = useRef(null);
 
   useEffect(() => {
-    // Initialize the Google Maps loader with the provided API key, version and necessary libraries.
-    const loader = new Loader({
-      apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
-      version: "weekly",
-      libraries: ["places"],
-    });
-
     loader.load().then((google) => {
         // Create a new map instance with specified options and set it to the map container reference.
         const mapInstance = new google.maps.Map(mapContainerRef.current, {
@@ -49,8 +41,29 @@ const MapContainer = () => {
       mapInstance.mapTypes.set("styled_map", grayscaleStyle);
       mapInstance.setMapTypeId("styled_map");
 
+      renderRoute(google, mapInstance, route);
     });
-  }, []);
+  }, [route, loader]);
+
+   // Function to render route on the map
+   const renderRoute = (google, map, route) => {
+    // Extract route data from the provided route object
+
+    // Decode the polyline points
+    const decodedPath = google.maps.geometry.encoding.decodePath(route.points);
+
+    // Create a Polyline object to render the route
+    const routePolyline = new google.maps.Polyline({
+      path: decodedPath,
+      geodesic: true,
+      strokeColor: "#3EF820",
+      strokeOpacity: 1.0,
+      strokeWeight: 3,
+    });
+
+    // Set the Polyline on the map
+    routePolyline.setMap(map);
+  };
 
   return (
     <div
