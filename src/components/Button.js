@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const MyButton = ({ buttonText, handleClick, backgroundColor, marginBottom, width, height }) => {
+const MyButton = ({ buttonText, handleClick, backgroundColor, marginBottom, width, height, disabled }) => {
 
   // Create a custom theme for the button
 const theme = createTheme({
@@ -21,7 +21,7 @@ const theme = createTheme({
 
   return (
     <ThemeProvider theme={theme}>
-      <Button variant="contained" color="primary" style={theme.root} onClick={handleClick}>
+      <Button disabled={disabled} variant="contained" color="primary" style={theme.root} onClick={handleClick}>
         {buttonText}
       </Button>
     </ThemeProvider>

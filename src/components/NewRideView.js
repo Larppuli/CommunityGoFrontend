@@ -17,7 +17,6 @@ function NewRideView() {
   };
 
   const handlePickupSelect = (pickupPlace) => {
-    console.log(pickupPlace)
     setPickup(pickupPlace);
   };
 
@@ -37,30 +36,30 @@ function NewRideView() {
 
     if (destination && pickup && time) {
         const newRide = {
-        destination: {
-            geometry: destination.geometry,
-            address_components: destination.address_components,
-            name: destination.name
-        },
-        pickup: {
-            pickup: pickup.geometry,
-            address_components: pickup.address_components,
-            name: pickup.name
-        },
-        time: time
+          destination: {
+              geometry: destination.geometry,
+              address_components: destination.address_components,
+              name: destination.name
+          },
+          pickup: {
+              geometry: pickup.geometry,
+              address_components: pickup.address_components,
+              name: pickup.name
+          },
+          time: time,
+          waypoints: []
         }
 
         try {
-        await fetch(`${process.env.REACT_APP_SERVER_URI}rides`, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newRide),
+          await fetch(`${process.env.REACT_APP_SERVER_URI}rides`, {
+              method: 'POST',
+              headers: {
+              'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(newRide),
         });
-        
         } catch (error) {
-        console.error('Error saving ride:', error);
+          console.error('Error saving ride:', error);
         };
     };
 

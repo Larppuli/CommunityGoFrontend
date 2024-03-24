@@ -43,13 +43,13 @@ function Bundles() {
       <div style={{ maxHeight: "70%", overflow: 'auto', background: "#333333" }}>
         <List>
           {isLoading ? ( // Render loading message if still loading
-            <p>Loading...</p>
+            <Typography  variant="h6" align="center" style={{ color: 'white' }}>Loading...</Typography>
           ) : (
             rides.map((ride, index) => (
               <Bundle key={index} ride={ride} />
             ))
           )}
-          {error && <p>{error}</p>}
+          {error && <Typography  variant="h6" align="center" style={{ color: 'white' }}>{error}</Typography>}
         </List>
       </div>
     </div>
