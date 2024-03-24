@@ -3,7 +3,7 @@ import axios from 'axios';
 import Bundle from './Bundle';
 import { Typography, List } from '@mui/material';
 
-function Bundles() {
+function Bundles( loader ) {
   const [rides, setRides] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Add loading state
@@ -26,7 +26,7 @@ function Bundles() {
     };
 
     fetchRides();
-  }, []);
+  }, [loader]);
 
   return (
     <div style={{ height: "800px", overflow: "hidden" }}>
@@ -46,7 +46,7 @@ function Bundles() {
             <Typography  variant="h6" align="center" style={{ color: 'white' }}>Loading...</Typography>
           ) : (
             rides.map((ride, index) => (
-              <Bundle key={index} ride={ride} />
+              <Bundle key={index} ride={ride} loader={loader} />
             ))
           )}
           {error && <Typography  variant="h6" align="center" style={{ color: 'white' }}>{error}</Typography>}
