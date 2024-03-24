@@ -25,55 +25,91 @@ function Bundle(ride) {
   const arrivalTime = new Date(ride.ride.arrivalTime);
   const hours = arrivalTime.getHours().toString().padStart(2, '0');
   const minutes = arrivalTime.getMinutes().toString().padStart(2, '0');
-  const [pickup, setPickup] = useState('');
   const [rideTime, setRideTime] = useState(null);
-  const [showAlert, setShowAlert] = useState(false); // State to control whether to show the alert
+  const [showAlert, setShowAlert] = useState(false);
   const [message, setMessage] = useState('');
   const [severity, setSeverity] = useState('');
+  const [id, setId] = useState('');
+  const [waypoints, setWaypoints] = useState([]);
+  const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
     setRideTime(ride.ride.rideTime)
-  }, [ride.ride.rideTime]);
+    setId(ride.ride._id)
+    setWaypoints(ride.ride.waypoints)
+  }, [ride.ride.rideTime, ride.ride._id, ride.ride.waypoint, ride.ride.waypoints]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-  const handlePickupSelect = (pickupPlace) => {
-    setPickup(pickupPlace)
+  const handlePickupSave = async () => {
+
+    const newRideData = {
+        waypoints: waypoints,
+        rideTime: rideTime
+    }
+
+    console.log(newRideData)
+
+    try {
+        await fetch(`${process.env.REACT_APP_SERVER_URI}rides/${id}`, {
+            method: 'PUT',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newRideData),
+        });
+        
+        } catch (error) {
+        console.error('Error saving ride:', error);
+        };
   };
 
-  const calculateDuration = async () => {
+  const calculateDuration = async (waypoint) => {
+
+    // Add every waypoint to an array
+    const waypointCleaned = {
+        geometry: waypoint.geometry,
+        address_components: waypoint.address_components,
+        name: waypoint.name
+    }
+    console.log("waypoints: ", ride.ride.waypoints)
+    const stops = Array.isArray(ride.ride.waypoints) ? [...ride.ride.waypoints, waypointCleaned] : [waypointCleaned];
+
     try {
-      const rideData = {
-        pickup: ride.ride.pickup.pickup.location,
-        destination: ride.ride.destination.geometry.location,
-        stops: [pickup.geometry.location]
-      };
+        const rideData = {
+            pickup: ride.ride.pickup.geometry.location,
+            destination: ride.ride.destination.geometry.location,
+            waypoints: stops
+          };
 
-      const response = await axios.post('http://localhost:5000/calculate-ride-time', rideData);
-      const { ride_time } = response.data;
-      
-      const timeDifference = ride_time - rideTime;
-      console.log(timeDifference);
+        const response = await axios.post('http://localhost:5000/calculate-ride-time', rideData);
+        const { ride_time } = response.data;
+        
+        const timeDifference = ride_time - rideTime;
+        console.log(timeDifference)
 
-      // If timeDifference is greater than 5, set showAlert to true
-      if (timeDifference > 5) {
-        setShowAlert(true);
-        setMessage("You are too far from the route!");
-        setSeverity("error");
-        // Set a timeout to hide the alert after 5 seconds
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 5000);
-      } else {
-        setShowAlert(true);
-        setMessage("Successfully joined the ride!");
-        setSeverity("success");
-        // Set a timeout to hide the alert after 5 seconds
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 5000);
+        // If timeDifference is greater than 5, set showAlert to true
+        if (timeDifference > 5) {
+          setShowAlert(true);
+          setMessage("You are too far from the route!");
+          setSeverity("error");
+          // Set a timeout to hide the alert after 5 seconds
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 5000);
+        } else {
+          setShowAlert(true);
+          setMessage("You are able to join the ride!");
+          setSeverity("success");
+          setDisabled(false)
+          setRideTime(ride_time)
+          setWaypoints(stops);
+          // Set a timeout to hide the alert after 5 seconds
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 5000);
       }
     } catch (error) {
       console.error('Error calculating ride duration:', error);
@@ -97,10 +133,10 @@ function Bundle(ride) {
       >
         <ExpandMoreIcon color="white" />
       </ExpandMore>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <Autofill onPlaceSelected={handlePickupSelect} defaultText="Your pickup location" margin="10px"/>
-        <MyButton handleClick={calculateDuration} buttonText="Join ride" backgroundColor="#4B4B4B" width="100%" height="50px" marginInline="15px"/>
-        <Grow in={showAlert} timeout={300} >
+      <Collapse in={expanded} timeout="auto" unmountOnExit >
+        <Autofill onPlaceSelected={calculateDuration} defaultText="Your pickup location" margin="10px"/>
+        <MyButton handleClick={handlePickupSave} disabled={disabled} buttonText="Join ride" backgroundColor="#4B4B4B" width="100%" height="50px" />
+        <Grow in={showAlert} timeout={300} style={{ height: '40px' }} >
           <Alert severity={severity} variant="filled" style={{ marginTop: '10px' }}>
             {message}
           </Alert>
