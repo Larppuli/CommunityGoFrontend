@@ -5,9 +5,7 @@ const Autofill = ({ onPlaceSelected, defaultText, margin, loader }) => {
   const inputRef = useRef(null);
   const [google, setGoogle] = useState(null);
 
-  // Initialize Google Maps Loader with the provided API key and load the 'places' library.
   useEffect(() => {
-
     // Set the 'google' state once the loader is successfully loaded.
     loader.load().then((google) => {
       setGoogle(google);
