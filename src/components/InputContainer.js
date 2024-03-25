@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import TimePick from './TimePick';
 
 // This components display two Autofill components and a TimePick component inside a box
-const Locations = ({ onPickupSelect, onDestinationSelect, onTimeSelect, loader }) => {
+const InputContainer = ({ onPickupSelect, onDestinationSelect, onTimeSelect, loader }) => {
     
     return (
         <Box
@@ -20,5 +20,4 @@ const Locations = ({ onPickupSelect, onDestinationSelect, onTimeSelect, loader }
     );
 };
 
-export default Locations;
-
+export default InputContainer;
