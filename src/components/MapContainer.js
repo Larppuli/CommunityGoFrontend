@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-const MapContainer = ({ route, loader }) => {
+const MapContainer = ({ route, loader, height }) => {
   const mapContainerRef = useRef(null);
 
   useEffect(() => {
@@ -45,31 +45,33 @@ const MapContainer = ({ route, loader }) => {
     });
   }, [route, loader]);
 
-   // Function to render route on the map
-   const renderRoute = (google, map, route) => {
-    // Extract route data from the provided route object
+// Function to render route on the map
+const renderRoute = (google, map, route) => {
+  // Check if route exists
+  if (!route || !route.points) {
+    console.error("Route data is empty or invalid");
+    return;
+  }
 
-    // Decode the polyline points
-    const decodedPath = google.maps.geometry.encoding.decodePath(route.points);
+  // Decode the polyline points
+  const decodedPath = google.maps.geometry.encoding.decodePath(route.points);
 
-    // Create a Polyline object to render the route
-    const routePolyline = new google.maps.Polyline({
-      path: decodedPath,
-      geodesic: true,
-      strokeColor: "#3EF820",
-      strokeOpacity: 1.0,
-      strokeWeight: 3,
-    });
+  // Create a Polyline object to render the route
+  const routePolyline = new google.maps.Polyline({
+    path: decodedPath,
+    strokeColor: "#FF0000",
+    strokeWeight: 4,
+  });
 
-    // Set the Polyline on the map
-    routePolyline.setMap(map);
-  };
+  // Set the Polyline on the map
+  routePolyline.setMap(map);
+};
 
   return (
     <div
       ref={mapContainerRef}
       style={{
-        height: "400px",
+        height: height,
         width: "99%",
         borderRadius: "5px",
         marginBottom: "10px",
