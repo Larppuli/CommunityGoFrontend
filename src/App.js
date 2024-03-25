@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Navbar from './components/Navbar';
 import NewRideView from './components/NewRideView';
-import Bundles from './components/Bundles';
+import PassengerBundles from './components/PassengerBundles';
+import DriverBundles from './components/DriverBundles';
 import { Loader } from '@googlemaps/js-api-loader';
 
 function App() {
@@ -17,7 +18,8 @@ function App() {
     <Router>
         <Routes>
           <Route path="/new-ride" element={<NewRideView loader={loader} />} />
-          <Route path="/bundles" element={<Bundles loader={loader} />} />
+          <Route path="/passenger-bundles" element={<PassengerBundles loader={loader} />} />
+          <Route path="/driver-bundles" element={<DriverBundles loader={loader} />} />
         </Routes>
         <Navbar />
     </Router>
