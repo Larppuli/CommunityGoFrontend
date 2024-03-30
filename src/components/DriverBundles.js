@@ -46,12 +46,12 @@ function DriverBundles({ loader }) {
 
   return (
     <div style={{ height: "800px", overflow: "hidden" }}>
-      <div style={{ position: "sticky", backgroundColor: "#333", zIndex: 1 }}>
+      <div style={{ position: "sticky", backgroundColor: "#353634", zIndex: 1 }}>
         <Typography variant="h4" align="center" gutterBottom style={{ color: 'white' }}>
           <b>CommunityGo</b>
         </Typography>
       </div>
-      <div style={{ marginTop: "15%", position: "sticky", backgroundColor: "#333", zIndex: 1 }}>
+      <div style={{ marginTop: "15%", position: "sticky", backgroundColor: "#353634", zIndex: 1 }}>
         <Typography variant="h5" align="center" gutterBottom style={{ color: 'white' }}>
           <b>Ride requests near you</b>
         </Typography>
@@ -66,7 +66,7 @@ function DriverBundles({ loader }) {
       ) : error ? (
         <Typography  variant="h6" align="center" style={{ color: 'white' }}>{error}</Typography>
       ) : (
-        <List>
+        <List style={{ maxHeight: "75%", overflow: 'auto', background: "#353634" }}>
           {rides.map((ride) => (
             <DriverBundle key={ride._id} ride={ride} handleShowRoute={() => handleShowRoute(ride)} />
           ))}
