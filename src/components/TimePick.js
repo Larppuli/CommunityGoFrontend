@@ -16,10 +16,10 @@ function TimePick({ onTimeSelect }) {
             width: '100%',
             marginY: '8px',
             '& .MuiInputLabel-outlined': {
-              color: '#d4d4dc',
+              color: 'white',
             },
             '& .MuiInputBase-input': {
-              color: '#d4d4dc',
+              color: 'white',
             },
           }}
       />
