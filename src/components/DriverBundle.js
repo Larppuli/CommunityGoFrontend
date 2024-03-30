@@ -12,12 +12,12 @@ import MyButton from './Button'
 const InfoTable = ({ legs }) => {
     
     return (
-        <TableContainer component={Paper} style={{ background: 'linear-gradient(to right, #381494, #592ec7)'}}>
+        <TableContainer component={Paper} style={{ background: '#353634', width: '95%', marginLeft: '2.5%'}}>
             <Table aria-label="simple table">
             <caption style={{ color: 'white', textAlign: 'center' }}><b>Destination: {legs[legs.length - 1].end_address}</b></caption>                
             <TableHead>
                 <TableRow>
-                    <TableCell style={{ color: 'white'}} align="left" ><b>Customer</b></TableCell>
+                    <TableCell style={{ color: 'white'}} align="left" ><b>Customers</b></TableCell>
                     <TableCell style={{ color: 'white', paddingRight: '44px'}} align="right" ><b>Pickup</b></TableCell>
                 </TableRow>
             </TableHead>
@@ -51,7 +51,7 @@ function DriverBundle({ ride, handleShowRoute }) {
   };
 
   return (
-    <Card style={{background: 'linear-gradient(to right, #381494, #592ec7)', justifyContent: 'space-around', alignItems: 'center', marginBottom: '12px'}}>
+    <Card style={{background: '#5662FF', justifyContent: 'space-around', alignItems: 'center', marginBottom: '12px'}}>
       <CardActionArea onClick={handleExpandClick} style={{ display: 'flex', color: 'white',  justifyContent: 'space-around', alignItems: 'center', paddingBlock: '10px'  }}>
         <Typography style={{ textAlign: 'center', flex: '1', fontSize: '14px', maxWidth: '30%' }}>
           {ride.pickup.name}
@@ -63,9 +63,9 @@ function DriverBundle({ ride, handleShowRoute }) {
           {arrivalTime.getHours()}:{arrivalTime.getMinutes()}
         </Typography>
       </CardActionArea>
-      <Collapse in={expanded} timeout="auto" unmountOnExit sx={{ background: 'linear-gradient(to right, #381494, #592ec7)' }}>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
         <InfoTable legs={ride.routes[0].legs} />
-        <MyButton handleClick={handleShowRoute} buttonText="Show route on map" backgroundColor="#001D87" margin="auto" width="100%" height="50px" />
+        <MyButton handleClick={handleShowRoute} buttonText="Show route on map" backgroundColor='#5662FF' margin="auto" width="100%" height="50px" />
       </Collapse>
     </Card>
   );
