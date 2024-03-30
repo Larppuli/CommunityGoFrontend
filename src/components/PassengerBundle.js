@@ -118,7 +118,7 @@ function PassengerBundle( {ride, loader} ) {
   };
 
   return (
-    <Card variant="outlined" style={{ color: 'white', background: 'linear-gradient(to right, #381494, #592ec7)', marginBottom: '18px', paddingBottom: "13px", marginInline: '10px', paddingInline: '20px' }}>
+    <Card variant="outlined" style={{ color: 'white', background: '#5662FF', marginBottom: '18px', paddingBottom: "13px", marginInline: '10px', paddingInline: '20px' }}>
       <Typography variant="h6" align="center">
         <b>{ride.destination.name}</b>
       </Typography>
