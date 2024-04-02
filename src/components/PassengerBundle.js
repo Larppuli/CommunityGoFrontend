@@ -20,7 +20,7 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-function Bundle( {ride, loader} ) {
+function PassengerBundle( {ride, loader} ) {
   const [expanded, setExpanded] = React.useState(false);
   const arrivalTime = new Date(ride.arrivalTime);
   const hours = arrivalTime.getHours().toString().padStart(2, '0');
@@ -48,10 +48,9 @@ function Bundle( {ride, loader} ) {
 
     const newRideData = {
         waypoints: waypoints,
-        rideTime: rideTime
+        rideTime: rideTime,
+        routes: routes
     }
-
-    console.log(newRideData)
 
     try {
         await fetch(`${process.env.REACT_APP_SERVER_URI}rides/${id}`, {
@@ -107,6 +106,7 @@ function Bundle( {ride, loader} ) {
           setDisabled(false)
           setRideTime(ride_time)
           setWaypoints(stops);
+          setRoutes(routes)
           // Set a timeout to hide the alert after 5 seconds
           setTimeout(() => {
             setShowAlert(false);
@@ -118,7 +118,7 @@ function Bundle( {ride, loader} ) {
   };
 
   return (
-    <Card variant="outlined" style={{ color: 'white', background: 'linear-gradient(to right, #381494, #592ec7)', marginBottom: '18px', paddingBottom: "13px", marginInline: '10px', paddingInline: '20px' }}>
+    <Card variant="outlined" style={{ color: 'white', background: '#5662FF', marginBottom: '18px', paddingBottom: "13px", marginInline: '10px', paddingInline: '20px' }}>
       <Typography variant="h6" align="center">
         <b>{ride.destination.name}</b>
       </Typography>
@@ -132,7 +132,7 @@ function Bundle( {ride, loader} ) {
         aria-label="show more"
         style={{ color: "white", marginInline: "45%" }}
       >
-        <ExpandMoreIcon color="white" />
+      <ExpandMoreIcon color="white" />
       </ExpandMore>
       <Collapse in={expanded} timeout="auto" unmountOnExit >
         <Autofill onPlaceSelected={calculateDuration} loader={loader.loader} defaultText="Your pickup location" margin="10px"/>
@@ -147,4 +147,4 @@ function Bundle( {ride, loader} ) {
   );
 }
 
-export default Bundle;
+export default PassengerBundle;

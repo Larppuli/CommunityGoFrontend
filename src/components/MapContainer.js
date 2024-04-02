@@ -1,26 +1,22 @@
 import React, { useEffect, useRef } from "react";
-import { Loader } from "@googlemaps/js-api-loader";
 
-const MapContainer = () => {
+const MapContainer = ({ polyline, ride, loader, height }) => {
   const mapContainerRef = useRef(null);
-
+  
   useEffect(() => {
-    // Initialize the Google Maps loader with the provided API key, version and necessary libraries.
-    const loader = new Loader({
-      apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
-      version: "weekly",
-      libraries: ["places"],
-    });
+    const loadMap = async () => {
+      const google = await loader.load();
+      const { PinElement } = await google.maps.importLibrary(
+        "marker",
+      );
 
-    loader.load().then((google) => {
-        // Create a new map instance with specified options and set it to the map container reference.
-        const mapInstance = new google.maps.Map(mapContainerRef.current, {
-          center: { lat: 60.4518, lng: 22.2666 }, // Coordinates for Turku
-          zoom: 12,
-          disableDefaultUI: true,
-          });
-
-      // The visuality of the map is defined here
+      const mapInstance = new google.maps.Map(mapContainerRef.current, {
+        center: { lat: 60.4518, lng: 22.2666 },
+        zoom: 12,
+        disableDefaultUI: true,
+        mapId: "DEMO_MAP_ID"
+      });
+      
       const grayscaleStyle = new google.maps.StyledMapType(
         [
           { elementType: "geometry", stylers: [{ color: "#333328" }] },
@@ -49,18 +45,76 @@ const MapContainer = () => {
       mapInstance.mapTypes.set("styled_map", grayscaleStyle);
       mapInstance.setMapTypeId("styled_map");
 
+      renderRoute(google, mapInstance, polyline);
+
+      const pinGreen = new PinElement({
+        background: 'green',
+        borderColor: 'green',
+        glyphColor: "#005610",
+      });
+      
+      // Add marker for destination if found
+      if (ride && ride.destination && ride.destination.geometry && ride.destination.geometry.location) {
+        new google.maps.marker.AdvancedMarkerElement({
+          position: ride.destination.geometry.location,
+          map: mapInstance,
+          title: ride.destination.name,
+          content: pinGreen.element
+        });
+      }
+
+      // Add marker for pickup if found
+      if (ride && ride.pickup && ride.pickup.geometry && ride.pickup.geometry.location) {
+        new google.maps.marker.AdvancedMarkerElement({
+          position: ride.pickup.geometry.location,
+          map: mapInstance,
+          title: ride.pickup.name,
+        });
+      }
+
+      // Add markers for waypoints if found
+      if (ride && ride.waypoints && Array.isArray(ride.waypoints)) {
+        ride.waypoints.forEach((waypoint, index) => {
+          if (waypoint && waypoint.geometry && waypoint.geometry.location) {
+            new google.maps.marker.AdvancedMarkerElement({
+              position: waypoint.geometry.location,
+              map: mapInstance,
+              title: waypoint.name,
+            });
+          }
+        });
+      }
+    };
+
+    loadMap();
+  }, [polyline, loader, ride]);
+
+  const renderRoute = (google, map, polyline) => {
+    if (!polyline || !polyline.points) {
+      console.error("Polyline data is empty or invalid");
+      return;
+    }
+
+    const decodedPath = google.maps.geometry.encoding.decodePath(polyline.points);
+
+    const routePolyline = new google.maps.Polyline({
+      path: decodedPath,
+      strokeColor: "#5662FF",
+      strokeWeight: 4,
     });
-  }, []);
+
+    routePolyline.setMap(map);
+  };
 
   return (
     <div
       ref={mapContainerRef}
       style={{
-        height: "400px",
+        height: height,
         width: "99%",
         borderRadius: "5px",
         marginBottom: "10px",
-        border: "2px solid #222222", 
+        border: "2px solid #222222",
       }}
     />
   );

@@ -1,24 +1,16 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Loader } from '@googlemaps/js-api-loader';
 import TextField from '@mui/material/TextField';
 
-const Autofill = ({ onPlaceSelected, defaultText, margin }) => {
+const Autofill = ({ onPlaceSelected, defaultText, margin, loader }) => {
   const inputRef = useRef(null);
   const [google, setGoogle] = useState(null);
 
-  // Initialize Google Maps Loader with the provided API key and load the 'places' library.
   useEffect(() => {
-    const loader = new Loader({
-      apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
-      version: 'weekly',
-      libraries: ['places']
-    });
-
     // Set the 'google' state once the loader is successfully loaded.
     loader.load().then((google) => {
       setGoogle(google);
     });
-  }, []);
+  }, [loader]);
 
   useEffect(() => {
     // Set up Google Maps autocomplete functionality when the 'google' object is ready.
@@ -36,7 +28,7 @@ const Autofill = ({ onPlaceSelected, defaultText, margin }) => {
     return () => {
       google.maps.event.clearInstanceListeners(autocomplete);
     };
-  }, [google, onPlaceSelected]);
+  }, [google, onPlaceSelected, loader]);
 
   // TextField component with Google Maps Autocomplete is returned
   return (
