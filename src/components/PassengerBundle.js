@@ -33,6 +33,8 @@ function PassengerBundle( {ride, loader} ) {
   const [waypoints, setWaypoints] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [routes, setRoutes] = useState('');
+  const [buttonText, setButtonText] = useState('Fill pickup location to join');
+
 
   useEffect(() => {
     setRideTime(ride.rideTime)
@@ -45,6 +47,16 @@ function PassengerBundle( {ride, loader} ) {
   };
 
   const handlePickupSave = async () => {
+
+    setMessage("Successfully joined the ride!");
+    setSeverity("success");
+    setShowAlert(true);
+    // Set a timeout to hide the alert after 3 seconds
+    setTimeout(() => {
+      setShowAlert(false);
+      setDisabled(true)
+      setButtonText("Joined")
+    }, 3000);
 
     const newRideData = {
         waypoints: waypoints,
@@ -74,32 +86,44 @@ function PassengerBundle( {ride, loader} ) {
         address_components: waypoint.address_components,
         name: waypoint.name
     }
-    console.log("waypoints: ", ride.waypoints)
     const stops = Array.isArray(ride.waypoints) ? [...ride.waypoints, waypointCleaned] : [waypointCleaned];
 
     try {
+        // Ride time for the whole route is calculated with this data
         const rideData = {
             pickup: ride.pickup.geometry.location,
             destination: ride.destination.geometry.location,
             waypoints: stops
           };
+          // Ride time for from stop to destination is calculated with this data
+          const rideDataPrice = {
+            pickup: {
+              lat: waypoint.geometry.location.lat(),
+              lng: waypoint.geometry.location.lng()
+            },
+            destination: ride.destination.geometry.location,
+          };
 
         const response = await axios.post('http://localhost:5000/calculate-ride-time', rideData);
+        const responsePrice = await axios.post('http://localhost:5000/calculate-ride-time', rideDataPrice);
         const { ride_time, routes } = response.data;
+        const ride_timePrice  = responsePrice.data.ride_time;
         
         const timeDifference = ride_time - rideTime;
-        console.log(timeDifference)
 
         // If timeDifference is greater than 5, set showAlert to true
         if (timeDifference > 5) {
+          setDisabled(true)
           setShowAlert(true);
           setMessage("You are too far from the route!");
+          setButtonText("Try different location")
           setSeverity("error");
-          // Set a timeout to hide the alert after 5 seconds
+          // Set a timeout to hide the alert after 4 seconds
           setTimeout(() => {
             setShowAlert(false);
-          }, 5000);
+          }, 4000);
         } else {
+          setButtonText(`Join Ride for ${ride_timePrice}€`)
           setShowAlert(true);
           setMessage("You are able to join the ride!");
           setSeverity("success");
@@ -110,7 +134,7 @@ function PassengerBundle( {ride, loader} ) {
           // Set a timeout to hide the alert after 5 seconds
           setTimeout(() => {
             setShowAlert(false);
-          }, 5000);
+          }, 3000);
       }
     } catch (error) {
       console.error('Error calculating ride duration:', error);
@@ -136,7 +160,7 @@ function PassengerBundle( {ride, loader} ) {
       </ExpandMore>
       <Collapse in={expanded} timeout="auto" unmountOnExit >
         <Autofill onPlaceSelected={calculateDuration} loader={loader.loader} defaultText="Your pickup location" margin="10px"/>
-        <MyButton handleClick={handlePickupSave} disabled={disabled} buttonText="Join ride" backgroundColor="#4B4B4B" width="100%" height="50px" />
+        <MyButton handleClick={handlePickupSave} disabled={disabled} buttonText={buttonText} backgroundColor="#4B4B4B" width="100%" height="50px" />
         <Grow in={showAlert} timeout={300} style={{ height: '40px' }} >
           <Alert severity={severity} variant="filled" style={{ marginTop: '10px' }}>
             {message}
