@@ -90,11 +90,6 @@ const MapContainer = ({ polyline, ride, loader, height }) => {
   }, [polyline, loader, ride]);
 
   const renderRoute = (google, map, polyline) => {
-    if (!polyline || !polyline.points) {
-      console.error("Polyline data is empty or invalid");
-      return;
-    }
-
     const decodedPath = google.maps.geometry.encoding.decodePath(polyline.points);
 
     const routePolyline = new google.maps.Polyline({
