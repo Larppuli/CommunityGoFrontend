@@ -85,7 +85,6 @@ function NewRideView({ loader }) {
         }],
         time: time
         }
-        console.log(newRide)
 
         try {
           await fetch(`${process.env.REACT_APP_SERVER_URI}rides`, {
