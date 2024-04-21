@@ -34,7 +34,7 @@ function NewRideView({ loader }) {
     if (pickup) {
       try {
         const rideData = {
-            pickup: {lat: pickup.geometry.location.lat(), lng: pickup.geometry.location.lng()},
+            waypoints: [{lat: pickup.geometry.location.lat(), lng: pickup.geometry.location.lng()}],
             destination: {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}
           };
         const response = await axios.post('http://localhost:5000/calculate-ride-time', rideData);
@@ -49,7 +49,7 @@ function NewRideView({ loader }) {
     else if (destination) {
       try {
         const rideData = {
-            pickup: {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()},
+            waypoints: [{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}],
             destination: {lat: destination.geometry.location.lat(), lng: destination.geometry.location.lng()}
           };
         const response = await axios.post('http://localhost:5000/calculate-ride-time', rideData);
@@ -78,14 +78,14 @@ function NewRideView({ loader }) {
               address_components: destination.address_components,
               name: destination.name
           },
-          pickup: {
-              geometry: pickup.geometry,
-              address_components: pickup.address_components,
-              name: pickup.name
-          },
-          time: time,
-          waypoints: []
+          waypoints: [{
+            geometry: pickup.geometry,
+            address_components: pickup.address_components,
+            name: pickup.name
+        }],
+        time: time
         }
+        console.log(newRide)
 
         try {
           await fetch(`${process.env.REACT_APP_SERVER_URI}rides`, {
