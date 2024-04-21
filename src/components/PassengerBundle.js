@@ -58,6 +58,7 @@ function PassengerBundle( {ride, loader} ) {
       setButtonText("Joined")
     }, 3000);
 
+    console.log(routes)
     const newRideData = {
         waypoints: waypoints,
         rideTime: rideTime,
@@ -102,12 +103,11 @@ function PassengerBundle( {ride, loader} ) {
         // Ride time for from stop to destination is calculated with this data
       const response = await axios.post('http://localhost:5000/calculate-ride-time', rideData);
       const { ride_time, routes } = response.data;
-      console.log(ride_time)
       
       const timeDifference = ride_time - rideTime;
 
       // If timeDifference is greater than 5, set showAlert to true
-      if (timeDifference > 5) {
+      if (timeDifference > 10) {
         setDisabled(true)
         setShowAlert(true);
         setMessage("You are too far from the route!");
