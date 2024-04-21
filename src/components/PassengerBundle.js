@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Card from '@mui/material/Card';
-import { Typography, Grow, Alert } from '@mui/material'; // Import Grow and Alert components
+import { Typography, Grow, Alert } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
@@ -34,7 +34,7 @@ function PassengerBundle( {ride, loader} ) {
   const [disabled, setDisabled] = useState(true);
   const [routes, setRoutes] = useState('');
   const [buttonText, setButtonText] = useState('Fill pickup location to join');
-
+  const [destinationDisability, setDestinationDisability] = useState(true);
 
   useEffect(() => {
     setRideTime(ride.rideTime)
@@ -89,52 +89,48 @@ function PassengerBundle( {ride, loader} ) {
     const stops = Array.isArray(ride.waypoints) ? [...ride.waypoints, waypointCleaned] : [waypointCleaned];
 
     try {
-        // Ride time for the whole route is calculated with this data
-        const rideData = {
-            pickup: ride.pickup.geometry.location,
-            destination: ride.destination.geometry.location,
-            waypoints: stops
-          };
-          // Ride time for from stop to destination is calculated with this data
-          const rideDataPrice = {
-            pickup: {
-              lat: waypoint.geometry.location.lat(),
-              lng: waypoint.geometry.location.lng()
-            },
-            destination: ride.destination.geometry.location,
-          };
+      // Map each waypoint to correct form for calculating distance
+      const mappedWaypoints = ride.waypoints.map(waypoint => ({
+        lat: waypoint.geometry.location.lat,
+        lng: waypoint.geometry.location.lng
+      }));
+      // Ride time for the whole route is calculated with this data
+      const rideData = {
+          destination: {lat: ride.destination.geometry.location.lat, lng: ride.destination.geometry.location.lng},
+          waypoints: mappedWaypoints.concat({lat: waypointCleaned.geometry.location.lat(), lng: waypointCleaned.geometry.location.lng()})
+        };
+        // Ride time for from stop to destination is calculated with this data
+      const response = await axios.post('http://localhost:5000/calculate-ride-time', rideData);
+      const { ride_time, routes } = response.data;
+      console.log(ride_time)
+      
+      const timeDifference = ride_time - rideTime;
 
-        const response = await axios.post('http://localhost:5000/calculate-ride-time', rideData);
-        const responsePrice = await axios.post('http://localhost:5000/calculate-ride-time', rideDataPrice);
-        const { ride_time, routes } = response.data;
-        const ride_timePrice  = responsePrice.data.ride_time;
-        
-        const timeDifference = ride_time - rideTime;
-
-        // If timeDifference is greater than 5, set showAlert to true
-        if (timeDifference > 5) {
-          setDisabled(true)
-          setShowAlert(true);
-          setMessage("You are too far from the route!");
-          setButtonText("Try different location")
-          setSeverity("error");
-          // Set a timeout to hide the alert after 4 seconds
-          setTimeout(() => {
-            setShowAlert(false);
-          }, 4000);
-        } else {
-          setButtonText(`Join Ride for ${ride_timePrice}€`)
-          setShowAlert(true);
-          setMessage("You are able to join the ride!");
-          setSeverity("success");
-          setDisabled(false)
-          setRideTime(ride_time)
-          setWaypoints(stops);
-          setRoutes(routes)
-          // Set a timeout to hide the alert after 5 seconds
-          setTimeout(() => {
-            setShowAlert(false);
-          }, 3000);
+      // If timeDifference is greater than 5, set showAlert to true
+      if (timeDifference > 5) {
+        setDisabled(true)
+        setShowAlert(true);
+        setMessage("You are too far from the route!");
+        setButtonText("Try different location")
+        setSeverity("error");
+        // Set a timeout to hide the alert after 4 seconds
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 4000);
+      } else {
+        setButtonText(`Join Ride`)
+        setDestinationDisability(false)
+        setShowAlert(true);
+        setMessage("You are able to join the ride!");
+        setSeverity("success");
+        setDisabled(false)
+        setRideTime(ride_time)
+        setWaypoints(stops);
+        setRoutes(routes)
+        // Set a timeout to hide the alert after 5 seconds
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
       }
     } catch (error) {
       console.error('Error calculating ride duration:', error);
@@ -159,7 +155,8 @@ function PassengerBundle( {ride, loader} ) {
       <ExpandMoreIcon color="white" />
       </ExpandMore>
       <Collapse in={expanded} timeout="auto" unmountOnExit >
-        <Autofill onPlaceSelected={calculateDuration} loader={loader.loader} defaultText="Your pickup location" margin="10px"/>
+        <Autofill onPlaceSelected={calculateDuration} disability={false} loader={loader.loader} defaultText="Your pickup location" margin="10px"/>
+        <Autofill onPlaceSelected={calculateDuration} disability={destinationDisability} loader={loader.loader} defaultText="Your Destination" defaultValue={ride.destination.name} margin="10px"/>
         <MyButton handleClick={handlePickupSave} disabled={disabled} buttonText={buttonText} backgroundColor="#4B4B4B" width="100%" height="50px" />
         <Grow in={showAlert} timeout={300} style={{ height: '40px' }} >
           <Alert severity={severity} variant="filled" style={{ marginTop: '10px' }}>
