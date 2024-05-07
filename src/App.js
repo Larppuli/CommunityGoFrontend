@@ -5,6 +5,7 @@ import NewRideView from './components/NewRideView';
 import PassengerBundles from './components/PassengerBundles';
 import DriverBundles from './components/DriverBundles';
 import { Loader } from '@googlemaps/js-api-loader';
+import DemoMap from './components/DemoMap';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="/new-ride" element={<NewRideView loader={loader} />} />
           <Route path="/passenger-bundles" element={<PassengerBundles loader={loader} />} />
           <Route path="/driver-bundles" element={<DriverBundles loader={loader} />} />
+          <Route path="/demomap" element={<DemoMap loader={loader} />} />
         </Routes>
         <Navbar />
     </Router>

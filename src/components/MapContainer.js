@@ -6,6 +6,10 @@ const MapContainer = ({ polyline, ride, loader, height }) => {
   useEffect(() => {
     const loadMap = async () => {
       const google = await loader.load();
+      const originPin = {
+        lat: polyline ? google.maps.geometry.encoding.decodePath(polyline.points)[0].lat() : null,
+        lng: polyline ? google.maps.geometry.encoding.decodePath(polyline.points)[0].lng() : null
+      }
       const { PinElement } = await google.maps.importLibrary(
         "marker",
       );
@@ -52,7 +56,12 @@ const MapContainer = ({ polyline, ride, loader, height }) => {
         borderColor: 'green',
         glyphColor: "#005610",
       });
-      
+
+      const pinYellow = new PinElement({
+        background: 'yellow',
+        borderColor: 'yellow',
+        glyphColor: "#E8AA00",
+      });
       // Add marker for destination if found
       if (ride && ride.destination && ride.destination.geometry && ride.destination.geometry.location) {
         new google.maps.marker.AdvancedMarkerElement({
@@ -63,33 +72,44 @@ const MapContainer = ({ polyline, ride, loader, height }) => {
         });
       }
 
-      // Add marker for pickup if found
-      if (ride && ride.pickup && ride.pickup.geometry && ride.pickup.geometry.location) {
-        new google.maps.marker.AdvancedMarkerElement({
-          position: ride.pickup.geometry.location,
-          map: mapInstance,
-          title: ride.pickup.name,
-        });
-      }
-
       // Add markers for waypoints if found
       if (ride && ride.waypoints && Array.isArray(ride.waypoints)) {
-        ride.waypoints.forEach((waypoint, index) => {
+        ride.waypoints.forEach((waypoint) => {
+          // Polyline messes up the origin coordinates so this is necessary
           if (waypoint && waypoint.geometry && waypoint.geometry.location) {
-            new google.maps.marker.AdvancedMarkerElement({
-              position: waypoint.geometry.location,
-              map: mapInstance,
-              title: waypoint.name,
-            });
+            const latFirstThreeDecimals = waypoint.geometry.location.lat.toFixed(2);
+            const lngFirstThreeDecimals = waypoint.geometry.location.lng.toFixed(2);
+            const originLatFirstThreeDecimals = originPin.lat.toFixed(2);
+            const originLngFirstThreeDecimals = originPin.lng.toFixed(2);
+            //if (latFirstThreeDecimals === originLatFirstThreeDecimals && lngFirstThreeDecimals === originLngFirstThreeDecimals)
+            if (latFirstThreeDecimals === originLatFirstThreeDecimals && lngFirstThreeDecimals === originLngFirstThreeDecimals) {
+              new google.maps.marker.AdvancedMarkerElement({
+                position: waypoint.geometry.location,
+                map: mapInstance,
+                title: waypoint.name,
+                content: pinYellow.element
+              });
+            } else {
+              new google.maps.marker.AdvancedMarkerElement({
+                position: waypoint.geometry.location,
+                map: mapInstance,
+                title: waypoint.name,
+              });
+            }
           }
         });
-      }
+      }      
     };
 
     loadMap();
   }, [polyline, loader, ride]);
 
   const renderRoute = (google, map, polyline) => {
+    if (!polyline || !polyline.points) {
+      console.error("Polyline data is empty or invalid");
+      return;
+    }
+
     const decodedPath = google.maps.geometry.encoding.decodePath(polyline.points);
 
     const routePolyline = new google.maps.Polyline({

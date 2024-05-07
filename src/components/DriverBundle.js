@@ -24,7 +24,7 @@ const InfoTable = ({ legs }) => {
                 <TableBody>
                     {legs.map((leg, index) => (
                     <TableRow
-                        key={leg.start_address}
+                        key={`${leg.start_address}-${index}`}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                         <TableCell style={{ color: 'white', paddingLeft: '44px'}} component="th" scope="row">
@@ -44,7 +44,8 @@ const InfoTable = ({ legs }) => {
 
 function DriverBundle({ ride, handleShowRoute }) {
   const [expanded, setExpanded] = React.useState(false);
-  const arrivalTime = new Date(ride.arrivalTime)
+  const hours = new Date(ride.arrivalTime).getHours().toString().padStart(2, '0');
+  const minutes = new Date(ride.arrivalTime).getMinutes().toString().padStart(2, '0');
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -54,13 +55,13 @@ function DriverBundle({ ride, handleShowRoute }) {
     <Card style={{background: '#5662FF', justifyContent: 'space-around', alignItems: 'center', marginBottom: '12px'}}>
       <CardActionArea onClick={handleExpandClick} style={{ display: 'flex', color: 'white',  justifyContent: 'space-around', alignItems: 'center', paddingBlock: '10px'  }}>
         <Typography style={{ textAlign: 'center', flex: '1', fontSize: '14px', maxWidth: '30%' }}>
-          {ride.pickup.name}
+          {ride.routes[0].legs[0].start_address}
         </Typography>
         <Typography style={{ textAlign: 'center', flex: '1', fontSize: '14px', maxWidth: '30%' }}>
           {ride.destination.name}
         </Typography>
         <Typography style={{ textAlign: 'center', flex: '1', fontSize: '14px', maxWidth: '30%' }}>
-          {arrivalTime.getHours()}:{arrivalTime.getMinutes()}
+          {hours}:{minutes}
         </Typography>
       </CardActionArea>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
