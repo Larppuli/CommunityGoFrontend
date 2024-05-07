@@ -34,7 +34,6 @@ function PassengerBundle( {ride, loader} ) {
   const [disabled, setDisabled] = useState(true);
   const [routes, setRoutes] = useState('');
   const [buttonText, setButtonText] = useState('Fill pickup location to join');
-  const [destinationDisability, setDestinationDisability] = useState(true);
 
   useEffect(() => {
     setRideTime(ride.rideTime)
@@ -58,11 +57,11 @@ function PassengerBundle( {ride, loader} ) {
       setButtonText("Joined")
     }, 3000);
 
-    console.log(routes)
+
     const newRideData = {
         waypoints: waypoints,
         rideTime: rideTime,
-        routes: routes
+        routes: routes,
     }
 
     try {
@@ -101,12 +100,12 @@ function PassengerBundle( {ride, loader} ) {
           waypoints: mappedWaypoints.concat({lat: waypointCleaned.geometry.location.lat(), lng: waypointCleaned.geometry.location.lng()})
         };
         // Ride time for from stop to destination is calculated with this data
-      const response = await axios.post('http://localhost:5000/calculate-ride-time', rideData);
+      const response = await axios.post('http://localhost:5001/calculate-multi-point-ride-time', rideData);
       const { ride_time, routes } = response.data;
       
       const timeDifference = ride_time - rideTime;
 
-      // If timeDifference is greater than 5, set showAlert to true
+      // If timeDifference is greater than 10, set showAlert to true
       if (timeDifference > 10) {
         setDisabled(true)
         setShowAlert(true);
@@ -119,7 +118,6 @@ function PassengerBundle( {ride, loader} ) {
         }, 4000);
       } else {
         setButtonText(`Join Ride`)
-        setDestinationDisability(false)
         setShowAlert(true);
         setMessage("You are able to join the ride!");
         setSeverity("success");
@@ -155,8 +153,7 @@ function PassengerBundle( {ride, loader} ) {
       <ExpandMoreIcon color="white" />
       </ExpandMore>
       <Collapse in={expanded} timeout="auto" unmountOnExit >
-        <Autofill onPlaceSelected={calculateDuration} disability={false} loader={loader.loader} defaultText="Your pickup location" margin="10px"/>
-        <Autofill onPlaceSelected={calculateDuration} disability={destinationDisability} loader={loader.loader} defaultText="Your Destination" defaultValue={ride.destination.name} margin="10px"/>
+        <Autofill onPlaceSelected={calculateDuration} loader={loader.loader} defaultText="Your pickup location" margin="10px"/>
         <MyButton handleClick={handlePickupSave} disabled={disabled} buttonText={buttonText} backgroundColor="#4B4B4B" width="100%" height="50px" />
         <Grow in={showAlert} timeout={300} style={{ height: '40px' }} >
           <Alert severity={severity} variant="filled" style={{ marginTop: '10px' }}>
