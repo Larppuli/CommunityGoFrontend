@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 
-const Autofill = ({ onPlaceSelected, defaultText, defaultValue, disability, margin, loader }) => {
+const Autofill = ({ onPlaceSelected, defaultText, defaultValue, margin, loader }) => {
   const inputRef = useRef(null);
   const [google, setGoogle] = useState(null);
 
@@ -35,7 +35,6 @@ const Autofill = ({ onPlaceSelected, defaultText, defaultValue, disability, marg
     <TextField
       inputRef={inputRef}
       defaultValue={defaultValue}
-      disabled={disability}
       label={
         <span style={{ color: 'white' }}>{defaultText}</span>}
       variant="filled"
