@@ -5,6 +5,6 @@ CommunityGo simplifies taxi transportation by intelligently grouping passengers 
   <b>CommunityGo in action</b>
 </p>
 <p align="center">
-  <img src="https://github.com/Larppuli/CommunityGoFrontend/assets/73671162/be209a24-c32c-4e40-bc43-b1d5ff4b0d0a" alt="CommunityGo" style="width:50%"><br>
+  <img src="https://github.com/Larppuli/CommunityGoFrontend/assets/73671162/be209a24-c32c-4e40-bc43-b1d5ff4b0d0a" alt="CommunityGo" style="width:80%"><br>
   <b>The routing algorithm calculates the shortest route between pickup points and destination</b>
 </p>
