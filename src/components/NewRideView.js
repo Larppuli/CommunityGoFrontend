@@ -34,10 +34,14 @@ function NewRideView({ loader }) {
     if (pickup) {
       try {
         const rideData = {
-            waypoints: [{lat: pickup.geometry.location.lat(), lng: pickup.geometry.location.lng()}],
-            destination: {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}
-          };
-        const response = await axios.post('http://localhost:5000/calculate-ride-time', rideData);
+          destination: {
+            geometry: place.geometry
+          },
+          origin: {
+            geometry: pickup.geometry
+          },
+        };
+        const response = await axios.post('http://localhost:5000/calculate-two-point-ride-time', rideData);
         const { ride_time } = response.data;
         setButtonText(`Request ride for ${ride_time} €`);
         
@@ -49,10 +53,10 @@ function NewRideView({ loader }) {
     else if (destination) {
       try {
         const rideData = {
-            waypoints: [{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}],
-            destination: {lat: destination.geometry.location.lat(), lng: destination.geometry.location.lng()}
-          };
-        const response = await axios.post('http://localhost:5000/calculate-ride-time', rideData);
+          destination: {geometry: destination.geometry},
+          origin: {geometry: place.geometry},
+        };
+        const response = await axios.post('http://localhost:5000/calculate-two-point-ride-time', rideData);
         const { ride_time } = response.data;
         setButtonText(`Request ride for ${ride_time} €`);
         
@@ -78,12 +82,12 @@ function NewRideView({ loader }) {
               address_components: destination.address_components,
               name: destination.name
           },
-          waypoints: [{
+          origin: {
             geometry: pickup.geometry,
             address_components: pickup.address_components,
             name: pickup.name
-        }],
-        time: time
+        },
+          time: time
         }
 
         try {
